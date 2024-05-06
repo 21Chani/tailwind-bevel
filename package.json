@@ -1,6 +1,6 @@
 {
   "name": "tailwind-bevel",
-  "version": "1.0.0",
+  "version": "1.2.2",
   "description": "A tailwind plugin for bevel corners",
   "main": "./dis/index.js",
   "module": "./dist/index.mjs",
@@ -19,6 +19,7 @@
   "author": "21Chani",
   "license": "ISC",
   "devDependencies": {
+    "tailwindcss": "^3.4.3",
     "ts-node": "^10.9.2",
     "tsup": "^8.0.2",
     "typescript": "^5.4.5"
