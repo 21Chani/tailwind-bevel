@@ -4,55 +4,51 @@ import twPlugin from "tailwindcss/plugin";
 import flattenPallete from "tailwindcss/lib/util/flattenColorPalette";
 
 import { createBackgroundGradientDirections } from "./utils/gradient";
+import { BevelFactory } from "./utils/factory/BevelFactory";
 
 const plugin = twPlugin(function ({ matchUtilities, matchComponents, addUtilities, theme }) {
   matchComponents(
     {
-      bevel: (val) => {
+      "b-border": (val) => {
+        const fac = new BevelFactory("bevel", "4px");
+        const path = fac.generateShape(true).toClipPath();
+
         return {
           "&::before": {
             content: '""',
-
             "--bevel-border": val ? val : "1px",
-            "--sum-offset-inset": "calc(var(--bevel-offset, 4px) + var(--bevel-border) / 2)",
-            "--sub-offset-inset": "calc(100% - var(--bevel-offset, 4px) - var(--bevel-border) / 2)",
 
             backgroundColor: "var(--bevel-background, none)",
             backgroundImage: "var(--bevel-background-image, none)",
             position: "absolute",
-            top: "0",
-            left: "0",
-            right: "0",
-            bottom: "0",
-            boxShadow: "inset 0 0 0 1px rgba(0, 0, 0, 0.1)",
+            inset: "0",
             zIndex: "-1",
+            transition: "inherit",
             borderRadius: "inherit",
-            "clip-path": `polygon(
-                var(--bevel-offset, 4px) 0,
-                calc(100% - var(--bevel-offset, 4px)) 0,
-                100% var(--bevel-offset, 4px),
-                100% calc(100% - var(--bevel-offset, 4px)),
-                calc(100% - var(--bevel-offset, 4px)) 100%,
-                var(--bevel-offset, 4px) 100%,
-                0 calc(100% - var(--bevel-offset, 4px)),
-                0 var(--bevel-offset, 4px),
-                var(--bevel-border) var(--sum-offset-inset),
-                var(--bevel-border) var(--sub-offset-inset),
-                var(--sum-offset-inset) calc(100% - var(--bevel-border)),
-                var(--sub-offset-inset) calc(100% - var(--bevel-border)),
-                calc(100% - var(--bevel-border)) var(--sub-offset-inset),
-                calc(100% - var(--bevel-border)) calc(var(--bevel-border) / 2 + var(--bevel-offset, 4px)),
-                var(--sub-offset-inset) var(--bevel-border),
-                var(--sum-offset-inset) var(--bevel-border),
-                var(--bevel-border) var(--sum-offset-inset),
-                0 var(--bevel-offset, 4px)
-              )`,
+            "clip-path": path,
           },
           position: "relative",
         };
       },
     },
     { values: theme("borderWidth") }
+  );
+
+  matchComponents(
+    {
+      bevel: (val) => {
+        const fac = new BevelFactory("bevel", "4px");
+        const path = fac.generateShape().toClipPath();
+
+        return {
+          "--bevel-offset": val,
+          "clip-path": path,
+        };
+      },
+    },
+    {
+      values: theme("width"),
+    }
   );
 
   matchUtilities(
